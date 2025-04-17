@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Silber\Bouncer\Database\Concerns\HasRoles;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 /**
  *
@@ -36,7 +38,7 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -48,7 +50,8 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nom',
+        'prenom',
         'email',
         'password',
     ];
@@ -77,10 +80,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Summary of reservations
-     * @return HasMany<Reservation, User>
-     */
-    public function reservations() {
-        return $this->hasMany(Reservation::class);
-    }
+ * Get the user's reservations.
+ */
+public function reservations(): \Illuminate\Database\Eloquent\Relations\HasMany
+{
+    return $this->hasMany(Reservation::class);
+}
 }
